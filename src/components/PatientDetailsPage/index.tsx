@@ -47,14 +47,34 @@ const PatientDetailsPage = () => {
     return <p>{error}</p>;
   }
 
+  // Type narrowing, remove need for ? operator
+  if (!details) return null;
+
+  const entries = details.entries.map((e) => (
+    <div key={e.id}>
+      <i>{e.date}</i>
+      <p>{e.description}</p>
+      {e.diagnosisCodes && (
+        <ul>
+          {e.diagnosisCodes.map((code, i) => (
+            <li key={code}>{code}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  ));
+
   return (
     <div>
-      <h2>{details?.name}</h2>
-      <p>{`Name: ${details?.name}`}</p>
-      <p>{`Gender: ${details?.gender}`}</p>
-      <p>{`DOB: ${details?.dateOfBirth}`}</p>
-      <p>{`Occupation: ${details?.occupation}`}</p>
-      <p>{`SSN: ${details?.ssn}`}</p>
+      <h2>{details.name}</h2>
+      <p>{`Name: ${details.name}`}</p>
+      <p>{`Gender: ${details.gender}`}</p>
+      <p>{`DOB: ${details.dateOfBirth}`}</p>
+      <p>{`Occupation: ${details.occupation}`}</p>
+      <p>{`SSN: ${details.ssn}`}</p>
+
+      <h3>Entries</h3>
+      {entries.length ? entries : <p>There are no entries.</p>}
     </div>
   );
 };
