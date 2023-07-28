@@ -11,6 +11,8 @@ import diagnosisService from "./services/diagnosis";
 import PatientListPage from "./components/PatientListPage";
 import PatientDetailsPage from "./components/PatientDetailsPage";
 
+import { DiagnosisContext } from "./contexts/DiagnosisContext";
+
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
@@ -39,32 +41,31 @@ const App = () => {
 
   return (
     <div className="App">
-      <Router>
-        <Container>
-          <Typography variant="h3" style={{ marginBottom: "0.5em" }}>
-            Patientor
-          </Typography>
-          <Button component={Link} to="/" variant="contained" color="primary">
-            Home
-          </Button>
-          <Divider hidden />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <PatientListPage
-                  patients={patients}
-                  setPatients={setPatients}
-                />
-              }
-            />
-            <Route
-              path="/patients/:id"
-              element={<PatientDetailsPage diagnoses={diagnoses} />}
-            />
-          </Routes>
-        </Container>
-      </Router>
+      <DiagnosisContext.Provider value={diagnoses}>
+        <Router>
+          <Container>
+            <Typography variant="h3" style={{ marginBottom: "0.5em" }}>
+              Patientor
+            </Typography>
+            <Button component={Link} to="/" variant="contained" color="primary">
+              Home
+            </Button>
+            <Divider hidden />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PatientListPage
+                    patients={patients}
+                    setPatients={setPatients}
+                  />
+                }
+              />
+              <Route path="/patients/:id" element={<PatientDetailsPage />} />
+            </Routes>
+          </Container>
+        </Router>
+      </DiagnosisContext.Provider>
     </div>
   );
 };
