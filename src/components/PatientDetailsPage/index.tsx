@@ -2,9 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { isAxiosError } from "axios";
 import patientService from "../../services/patients";
-import { Patient } from "../../types";
+import { Patient, Diagnosis } from "../../types";
 
-const PatientDetailsPage = () => {
+export interface PatientDetailsPageProps {
+  diagnoses: Diagnosis[];
+}
+
+const PatientDetailsPage = ({ diagnoses }: PatientDetailsPageProps) => {
   const [details, setDetails] = useState<Patient | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -47,7 +51,7 @@ const PatientDetailsPage = () => {
     return <p>{error}</p>;
   }
 
-  // Type narrowing, remove need for ? operator
+  // Type narrowing, remove need for '?' operator
   if (!details) return null;
 
   const entries = details.entries.map((e) => (
@@ -56,8 +60,10 @@ const PatientDetailsPage = () => {
       <p>{e.description}</p>
       {e.diagnosisCodes && (
         <ul>
-          {e.diagnosisCodes.map((code, i) => (
-            <li key={code}>{code}</li>
+          {e.diagnosisCodes.map((code) => (
+            <li key={code}>{`${code}: ${
+              diagnoses.find((d) => d.code === code)?.name
+            }`}</li>
           ))}
         </ul>
       )}
