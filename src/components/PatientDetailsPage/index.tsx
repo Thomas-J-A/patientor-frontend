@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { isAxiosError } from "axios";
 import EntryDetails from "../EntryDetails";
+import NewEntryForm from "..//NewEntryForm";
 import patientService from "../../services/patients";
 import { Patient } from "../../types";
 
@@ -52,7 +53,9 @@ const PatientDetailsPage = () => {
   if (!details) return null;
 
   // Create a list of entry components
-  const entries = details.entries.map((e) => <EntryDetails entry={e} />);
+  const entries = details.entries.map((e) => (
+    <EntryDetails key={e.id} entry={e} />
+  ));
 
   return (
     <div>
@@ -64,6 +67,7 @@ const PatientDetailsPage = () => {
       <p>{`SSN: ${details.ssn}`}</p>
 
       <h3>Entries</h3>
+      <NewEntryForm patientId={id as string} setDetails={setDetails} />
       {entries.length ? entries : <p>There are no entries.</p>}
     </div>
   );
