@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { isAxiosError } from "axios";
+import TabButtons from "./TabButtons";
+import HealthCheckForm from "./HealthCheckForm";
+import HospitalForm from "./HospitalForm";
+import OccupationalHealthcareForm from "./OccupationHealthcareForm";
 import Error from "../Error";
 import patientService from "../../services/patients";
-import { NewHealthCheckEntry, Patient } from "../../types";
+import { Patient, EntryTypes, NewEntry } from "../../types";
 
 export interface NewEntryFormProps {
   patientId: string;
@@ -10,26 +14,10 @@ export interface NewEntryFormProps {
 }
 
 const NewEntryForm = ({ patientId, setDetails }: NewEntryFormProps) => {
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [specialist, setSpecialist] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState("");
-  const [healthCheckRating, setHealthCheckRating] = useState("");
+  const [type, setType] = useState<EntryTypes>("HealthCheck");
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
-  const addEntry = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    // Create entry object
-    const newEntry: NewHealthCheckEntry = {
-      type: "HealthCheck",
-      description,
-      date,
-      specialist,
-      ...(diagnosisCodes && { diagnosisCodes: diagnosisCodes.split(", ") }), // Add field only if value is set
-      healthCheckRating: Number(healthCheckRating),
-    };
-
+  const addEntry = async (newEntry: NewEntry) => {
     // Submit to backend
     try {
       const res = await patientService.addEntry(newEntry, patientId);
@@ -38,13 +26,6 @@ const NewEntryForm = ({ patientId, setDetails }: NewEntryFormProps) => {
       setDetails((prev) =>
         prev ? { ...prev, entries: [...prev.entries, res] } : null
       );
-
-      // Reset input fields
-      setDescription("");
-      setDate("");
-      setSpecialist("");
-      setDiagnosisCodes("");
-      setHealthCheckRating("");
     } catch (err) {
       if (isAxiosError(err)) {
         setErrMsg(err.response?.data.error as string);
@@ -56,6 +37,21 @@ const NewEntryForm = ({ patientId, setDetails }: NewEntryFormProps) => {
     }
   };
 
+  // Conditionally render different form fields depending on type state
+  let form: JSX.Element;
+
+  switch (type) {
+    case "HealthCheck":
+      form = <HealthCheckForm addEntry={addEntry} />;
+      break;
+    case "OccupationHealthcare":
+      form = <OccupationalHealthcareForm addEntry={addEntry} />;
+      break;
+    case "Hospital":
+      form = <HospitalForm addEntry={addEntry} />;
+      break;
+  }
+
   return (
     <div
       style={{
@@ -65,60 +61,9 @@ const NewEntryForm = ({ patientId, setDetails }: NewEntryFormProps) => {
       }}
     >
       <h3>Add New Entry</h3>
-      <form onSubmit={addEntry}>
-        {errMsg && <Error msg={errMsg} />}
-        <div>
-          <label>
-            Description:
-            <input
-              type="text"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Date:
-            <input
-              type="text"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Specialist:
-            <input
-              type="text"
-              value={specialist}
-              onChange={(e) => setSpecialist(e.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Diagnosis Codes:
-            <input
-              type="text"
-              value={diagnosisCodes}
-              onChange={(e) => setDiagnosisCodes(e.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label>
-            Health Check Rating:
-            <input
-              type="text"
-              value={healthCheckRating}
-              onChange={(e) => setHealthCheckRating(e.target.value)}
-            />
-          </label>
-        </div>
-        <button type="submit">Add Entry</button>
-      </form>
+      <TabButtons setType={setType} />
+      {errMsg && <Error msg={errMsg} />}
+      {form}
     </div>
   );
 };
