@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DiagnosisSelectInput from "../DiagnosisSelectInput";
 import { NewEntry, NewHealthCheckEntry } from "../../../types";
 
 export interface HealthCheckFormProps {
@@ -52,7 +53,7 @@ const HealthCheckForm = ({ addEntry }: HealthCheckFormProps) => {
         <label>
           Date:
           <input
-            type="text"
+            type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -71,21 +72,25 @@ const HealthCheckForm = ({ addEntry }: HealthCheckFormProps) => {
       <div>
         <label>
           Diagnosis Codes:
-          <input
-            type="text"
-            value={diagnosisCodes}
-            onChange={(e) => setDiagnosisCodes(e.target.value)}
+          <DiagnosisSelectInput
+            state={diagnosisCodes}
+            setState={setDiagnosisCodes}
           />
         </label>
       </div>
       <div>
         <label>
           Health Check Rating:
-          <input
-            type="text"
+          <select
             value={healthCheckRating}
             onChange={(e) => setHealthCheckRating(e.target.value)}
-          />
+          >
+            <option value="">--- Choose a rating ---</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
         </label>
       </div>
       <button type="submit">Add Entry</button>

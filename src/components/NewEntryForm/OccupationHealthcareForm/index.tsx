@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DiagnosisSelectInput from "../DiagnosisSelectInput";
 import { NewEntry, NewOccupationalHealthcareEntry } from "../../../types";
 
 export interface OccupationalHealthcareFormProps {
@@ -61,7 +62,7 @@ const OccupationalHealthcareForm = ({
         <label>
           Date:
           <input
-            type="text"
+            type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -80,10 +81,9 @@ const OccupationalHealthcareForm = ({
       <div>
         <label>
           Diagnosis Codes:
-          <input
-            type="text"
-            value={diagnosisCodes}
-            onChange={(e) => setDiagnosisCodes(e.target.value)}
+          <DiagnosisSelectInput
+            state={diagnosisCodes}
+            setState={setDiagnosisCodes}
           />
         </label>
       </div>
@@ -101,7 +101,7 @@ const OccupationalHealthcareForm = ({
         <label>
           Sick Leave Start:
           <input
-            type="text"
+            type="date"
             value={sickLeaveStart}
             onChange={(e) => setSickLeaveStart(e.target.value)}
           />
@@ -111,7 +111,7 @@ const OccupationalHealthcareForm = ({
         <label>
           Sick Leave End:
           <input
-            type="text"
+            type="date"
             value={sickLeaveEnd}
             onChange={(e) => setSickLeaveEnd(e.target.value)}
           />

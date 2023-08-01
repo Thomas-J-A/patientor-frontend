@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DiagnosisSelectInput from "../DiagnosisSelectInput";
 import { NewEntry, NewHospitalEntry } from "../../../types";
 
 export interface HospitalFormProps {
@@ -57,7 +58,7 @@ const HospitalForm = ({ addEntry }: HospitalFormProps) => {
         <label>
           Date:
           <input
-            type="text"
+            type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -76,10 +77,9 @@ const HospitalForm = ({ addEntry }: HospitalFormProps) => {
       <div>
         <label>
           Diagnosis Codes:
-          <input
-            type="text"
-            value={diagnosisCodes}
-            onChange={(e) => setDiagnosisCodes(e.target.value)}
+          <DiagnosisSelectInput
+            state={diagnosisCodes}
+            setState={setDiagnosisCodes}
           />
         </label>
       </div>
@@ -87,7 +87,7 @@ const HospitalForm = ({ addEntry }: HospitalFormProps) => {
         <label>
           Discharge Date:
           <input
-            type="text"
+            type="date"
             value={dischargeDate}
             onChange={(e) => setDischargeDate(e.target.value)}
           />
